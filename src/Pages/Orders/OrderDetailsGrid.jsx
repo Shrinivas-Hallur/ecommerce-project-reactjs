@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+// import axios from 'axios';
+import api from "../../api";
 
 export function OrdersDetailsGrid({ order, loadCart }) {
   return (
@@ -10,7 +11,7 @@ export function OrdersDetailsGrid({ order, loadCart }) {
 
         const addToCart=async()=>{
           console.log("button clicked")
-          await axios.post('/api/cart-items', {
+          await api.post('/api/cart-items', {
             productId: orderProduct.product.id,
             quantity:1
           });

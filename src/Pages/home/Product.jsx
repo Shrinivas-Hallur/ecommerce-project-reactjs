@@ -1,81 +1,186 @@
+// // import React from 'react';
 // import React from 'react';
-import React from 'react';
-import axios from 'axios';
-import {useState} from 'react';
-import { formatMoney } from '../../utils/money';
+// import axios from 'axios';
+// import {useState} from 'react';
+// import { formatMoney } from '../../utils/money';
 
-export function Product({product, loadCart}) {
+// export function Product({product, loadCart}) {
+//   const [quantity, setQuantity] = useState(1);
+//   const [showAddedMessage, setShowAddedmessage]=useState(false);
+
+//   const addToCart=async () => {
+//           await axios.post("/api/cart-items", {
+//             productId: product.id,
+//             quantity
+//           }); // cerate data in backend
+//           await loadCart();
+
+//           setShowAddedmessage(true);
+
+//           setTimeout(()=>{
+//             setShowAddedmessage(false);
+//           },2000);
+//         }
+
+//    const selectQuantity=(event) => {
+//             const quantitySelected = Number(event.target.value);
+//             setQuantity(quantitySelected);  
+//           }
+
+//   return (
+//     <div className="product-container" data-testid="product-container">
+//       <div className="product-image-container">
+//         <img className="product-image"
+//          src={product.image} 
+//          data-testid="product-image"
+//          />
+//       </div>
+
+//       <div className="product-name limit-text-to-2-lines">{product.name}</div>
+
+//       <div className="product-rating-container">
+//         <img
+//           className="product-rating-stars"
+//           data-testid="product-rating-stars-image"
+//           src={`images/ratings/rating-${product.rating.stars * 10}.png`}
+//         />
+//         <div className="product-rating-count link-primary">
+//           {product.rating.count}
+//         </div>
+//       </div>
+
+//       <div className="product-price">{formatMoney(product.priceCents)}</div>
+  
+//       <div className="product-quantity-container">
+//         <select
+//           value={quantity}
+//           onChange={selectQuantity}
+//           data-testid="product-quantity-selector"
+//         >
+//           <option value="1">1</option>
+//           <option value="2">2</option>
+//           <option value="3">3</option>
+//           <option value="4">4</option>
+//           <option value="5">5</option>
+//           <option value="6">6</option>
+//           <option value="7">7</option>
+//           <option value="8">8</option>
+//           <option value="9">9</option>
+//           <option value="10">10</option>
+//         </select>
+//       </div>
+
+//       <div className="product-spacer"></div>
+
+//       <div className="added-to-cart"
+//         style={{opacity: showAddedMessage ? 1 : 0,}}
+//       >
+//         <img src="images/icons/checkmark.png" />
+//         Added
+//       </div>
+
+//       <button
+//         className="add-to-cart-button button-primary"
+//         onClick={addToCart}
+//         data-testid="add-to-cart-button"
+//       >
+//         Add to Cart
+//       </button>
+//     </div>
+//   );
+// }
+
+
+import React, { useState } from "react";
+import api from "../../api";
+import { formatMoney } from "../../utils/money";
+
+const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.BASE_URL;
+
+export function Product({ product, loadCart }) {
   const [quantity, setQuantity] = useState(1);
-  const [showAddedMessage, setShowAddedmessage]=useState(false);
+  const [showAddedMessage, setShowAddedMessage] = useState(false);
 
-  const addToCart=async () => {
-          await axios.post("/api/cart-items", {
-            productId: product.id,
-            quantity
-          }); // cerate data in backend
-          await loadCart();
+  const addToCart = async () => {
+    try {
+      await api.post("/api/cart-items", {
+        productId: product.id,
+        quantity,
+      });
 
-          setShowAddedmessage(true);
+      await loadCart();
 
-          setTimeout(()=>{
-            setShowAddedmessage(false);
-          },2000);
-        }
+      setShowAddedMessage(true);
 
-   const selectQuantity=(event) => {
-            const quantitySelected = Number(event.target.value);
-            setQuantity(quantitySelected);  
-          }
+      setTimeout(() => {
+        setShowAddedMessage(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  const selectQuantity = (event) => {
+    setQuantity(Number(event.target.value));
+  };
 
   return (
     <div className="product-container" data-testid="product-container">
       <div className="product-image-container">
-        <img className="product-image"
-         src={product.image} 
-         data-testid="product-image"
-         />
+        <img
+          className="product-image"
+          src={`${API_URL}/${product.image}`}
+          alt={product.name}
+          data-testid="product-image"
+        />
       </div>
 
-      <div className="product-name limit-text-to-2-lines">{product.name}</div>
+      <div className="product-name limit-text-to-2-lines">
+        {product.name}
+      </div>
 
       <div className="product-rating-container">
         <img
           className="product-rating-stars"
           data-testid="product-rating-stars-image"
-          src={`images/ratings/rating-${product.rating.stars * 10}.png`}
+          src={`${BASE_URL}images/ratings/rating-${product.rating.stars * 10}.png`}
+          alt="Rating"
         />
+
         <div className="product-rating-count link-primary">
           {product.rating.count}
         </div>
       </div>
 
-      <div className="product-price">{formatMoney(product.priceCents)}</div>
-  
+      <div className="product-price">
+        {formatMoney(product.priceCents)}
+      </div>
+
       <div className="product-quantity-container">
         <select
           value={quantity}
           onChange={selectQuantity}
           data-testid="product-quantity-selector"
         >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
+          {[...Array(10)].map((_, index) => (
+            <option key={index + 1} value={index + 1}>
+              {index + 1}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className="product-spacer"></div>
 
-      <div className="added-to-cart"
-        style={{opacity: showAddedMessage ? 1 : 0,}}
+      <div
+        className="added-to-cart"
+        style={{ opacity: showAddedMessage ? 1 : 0 }}
       >
-        <img src="images/icons/checkmark.png" />
+        <img
+          src={`${BASE_URL}images/icons/checkmark.png`}
+          alt="Added"
+        />
         Added
       </div>
 
