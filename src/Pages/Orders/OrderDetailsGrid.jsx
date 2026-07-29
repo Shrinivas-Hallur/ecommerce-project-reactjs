@@ -8,12 +8,11 @@ export function OrdersDetailsGrid({ order, loadCart }) {
   return (
     <div className="order-details-grid">
       {order.products.map((orderProduct) => {
-
-        const addToCart=async()=>{
-          console.log("button clicked")
-          await api.post('/api/cart-items', {
+        const addToCart = async () => {
+          console.log("button clicked");
+          await api.post("/api/cart-items", {
             productId: orderProduct.product.id,
-            quantity:1
+            quantity: 1,
           });
           await loadCart();
         };
@@ -24,7 +23,11 @@ export function OrdersDetailsGrid({ order, loadCart }) {
               {/* <img src="images/products/athletic-cotton-socks-6-pairs.jpg" /> */}
               <img
                 className="product-image"
-                src={`/${orderProduct.product.image}`}
+                src={`${
+                  import.meta.env.PROD
+                    ? "https://ecommerce-backend-reactjs.onrender.com"
+                    : ""
+                }/${orderProduct.product.image}`}
                 alt={orderProduct.product.name}
               />
             </div>
@@ -38,10 +41,13 @@ export function OrdersDetailsGrid({ order, loadCart }) {
               <div className="product-quantity">
                 Quantity: {orderProduct.quantity}
               </div>
-              <button className="buy-again-button button-primary" onClick={addToCart}>
+              <button
+                className="buy-again-button button-primary"
+                onClick={addToCart}
+              >
                 <img
                   className="buy-again-icon"
-                  src="images/icons/buy-again.png"
+                  src={`${import.meta.env.BASE_URL}images/icons/buy-again.png`}
                 />
                 <span className="buy-again-message">Add to Cart</span>
               </button>
